@@ -1,6 +1,14 @@
 const API_BASE_URL = window.AF_API_BASE_URL || 'https://afmos-travel-backend.onrender.com';
 const TOKEN_KEY = 'afmos_token';
-const USER_KEY = 'afmos_user';
+const USER_KEY  = 'afmos_user';
+
+// Pages qui ne doivent PAS être redirigées (elles gèrent elles-mêmes l'auth)
+const AUTH_PAGES = ['index.html', '/'];
+
+function isAuthPage() {
+  const path = window.location.pathname;
+  return AUTH_PAGES.some(p => path.endsWith(p)) || path === '/';
+}
 
 export function getToken() {
   return window.localStorage.getItem(TOKEN_KEY) || window.sessionStorage.getItem(TOKEN_KEY);
@@ -64,13 +72,15 @@ async function request(path, { method = 'GET', body, headers = {}, isFormData = 
     if (!res.ok) {
       const message = data?.error?.message || data?.message || 'Erreur serveur';
       const code = data?.error?.code || 'HTTP_ERROR';
-      if (res.status === 401) {
+
+      // ✅ CORRECTION : ne rediriger que si on n'est PAS déjà sur la page de login
+      // Évite la boucle infinie "401 → redirect index.html → 401 → ..."
+      if (res.status === 401 && !isAuthPage()) {
         clearSession();
-        // Redirection douce vers la page de login
-        if (!window.location.pathname.endsWith('index.html')) {
-          window.location.href = 'index.html';
-        }
+        window.location.href = 'index.html';
+        return; // Stop l'exécution
       }
+
       const error = new Error(message);
       error.status = res.status;
       error.code = code;
@@ -84,9 +94,8 @@ async function request(path, { method = 'GET', body, headers = {}, isFormData = 
 }
 
 export const http = {
-  get: (path) => request(path, { method: 'GET' }),
+  get:  (path)        => request(path, { method: 'GET' }),
   post: (path, body, options = {}) => request(path, { method: 'POST', body, ...options }),
-  put: (path, body) => request(path, { method: 'PUT', body }),
-  del: (path) => request(path, { method: 'DELETE' })
+  put:  (path, body)  => request(path, { method: 'PUT', body }),
+  del:  (path)        => request(path, { method: 'DELETE' })
 };
-
