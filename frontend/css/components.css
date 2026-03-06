@@ -1,0 +1,83 @@
+/* Design complémentaire à Tailwind (via CDN) pour AFMOS Travel */
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+.card {
+  @apply rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200/60 md:p-5;
+}
+
+.form-label {
+  @apply mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500;
+}
+
+.form-input {
+  @apply block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm
+    text-slate-900 shadow-sm placeholder:text-slate-400
+    focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2.5
+    text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
+    disabled:cursor-not-allowed disabled:bg-slate-300;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center rounded-lg px-3 py-1.5 text-slate-600
+    text-sm font-medium hover:bg-slate-100 hover:text-slate-900;
+}
+
+.btn-outline {
+  @apply inline-flex items-center justify-center rounded-lg border border-slate-300
+    px-4 py-2 text-sm font-medium text-slate-700 hover:border-indigo-500 hover:text-indigo-600;
+}
+
+.checkbox {
+  @apply h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500;
+}
+
+.badge {
+  @apply inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium;
+}
+
+.badge-status {
+  @apply badge bg-slate-100 text-slate-700;
+}
+
+.badge-status-approved {
+  @apply badge bg-emerald-50 text-emerald-700;
+}
+
+.badge-status-rejected {
+  @apply badge bg-rose-50 text-rose-700;
+}
+
+.badge-status-pending {
+  @apply badge bg-amber-50 text-amber-800;
+}
+
+.badge-status-suspicious {
+  @apply badge bg-red-100 text-red-700;
+}
+
+.stat-card {
+  @apply card flex flex-col gap-1;
+}
+
+.stat-label {
+  @apply text-xs font-medium uppercase tracking-wide text-slate-500;
+}
+
+.stat-value {
+  @apply text-xl font-semibold text-slate-900;
+}
+
+@media (max-width: 640px) {
+  .card {
+    border-radius: 1rem;
+  }
+}
+

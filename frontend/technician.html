@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>AFMOS Travel - Technicien</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/components.css" />
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-900">
+    <div class="flex min-h-screen flex-col">
+      <!-- Header -->
+      <header class="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-semibold shadow-sm">
+            AF
+          </div>
+          <div>
+            <div class="text-sm font-semibold text-slate-900">AFMOS Travel</div>
+            <div class="text-xs text-slate-500">Technicien – Déclarations de déplacement</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="tech-user-name" class="hidden text-sm text-slate-600 md:inline"></span>
+          <button id="logout-btn" class="btn-ghost text-sm">
+            Déconnexion
+          </button>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="flex-1 px-4 py-4 md:px-6 md:py-6">
+        <div class="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row">
+          <!-- Form column -->
+          <section class="w-full md:w-2/5">
+            <h2 class="mb-3 text-base font-semibold text-slate-900">
+              Nouvelle déclaration de déplacement
+            </h2>
+            <div class="card space-y-4">
+              <form id="travel-form" class="space-y-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label class="form-label" for="departureCity">Ville de départ</label>
+                    <select id="departureCity" name="departureCity" class="form-input" required>
+                      <option value="">Sélectionner...</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="form-label" for="destinationCity">Ville de destination</label>
+                    <select id="destinationCity" name="destinationCity" class="form-input" required>
+                      <option value="">Sélectionner...</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="form-label" for="missionDate">Date de mission</label>
+                  <input
+                    id="missionDate"
+                    name="missionDate"
+                    type="date"
+                    required
+                    class="form-input"
+                  />
+                </div>
+
+                <div>
+                  <label class="form-label" for="colleagues">Collègues (facultatif)</label>
+                  <select
+                    id="colleagues"
+                    name="colleagues"
+                    multiple
+                    class="form-input h-24"
+                  ></select>
+                  <p class="mt-1 text-xs text-slate-500">
+                    Maintenez Ctrl (ou long-tap mobile) pour sélectionner plusieurs collègues.
+                  </p>
+                </div>
+
+                <div>
+                  <span class="form-label">Repas</span>
+                  <div class="flex flex-wrap gap-3">
+                    <label class="inline-flex items-center gap-2">
+                      <input id="lunch" type="checkbox" class="checkbox" />
+                      <span>Déjeuner</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input id="dinner" type="checkbox" class="checkbox" />
+                      <span>Dîner</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="form-label" for="comments">Commentaires (facultatif)</label>
+                  <textarea
+                    id="comments"
+                    name="comments"
+                    rows="2"
+                    class="form-input"
+                    placeholder="Objet de la mission, site client, etc."
+                  ></textarea>
+                </div>
+
+                <div>
+                  <label class="form-label" for="proofPhoto">Photo justificative (optionnel)</label>
+                  <input
+                    id="proofPhoto"
+                    type="file"
+                    accept="image/*"
+                    class="block w-full text-sm text-slate-600
+                           file:mr-4 file:rounded-md file:border-0
+                           file:bg-indigo-50 file:px-3 file:py-1.5
+                           file:text-sm file:font-semibold
+                           file:text-indigo-700 hover:file:bg-indigo-100"
+                  />
+                  <p class="mt-1 text-xs text-slate-500">
+                    La photo n'est envoyée que si l'API backend multipart est disponible.
+                  </p>
+                </div>
+
+                <div class="rounded-md bg-slate-50 p-3 text-xs text-slate-600">
+                  <div class="flex items-center justify-between">
+                    <span id="gps-status">GPS : en attente</span>
+                    <button
+                      id="gps-refresh-btn"
+                      type="button"
+                      class="text-indigo-600 hover:text-indigo-800"
+                    >
+                      Re-capturer
+                    </button>
+                  </div>
+                  <div id="gps-coords" class="mt-1 text-[11px] text-slate-500"></div>
+                </div>
+
+                <button
+                  id="submit-btn"
+                  type="submit"
+                  class="btn-primary w-full"
+                >
+                  Soumettre la déclaration
+                </button>
+                <p id="form-error" class="text-sm text-red-600 hidden"></p>
+                <p id="form-success" class="text-sm text-emerald-600 hidden"></p>
+              </form>
+            </div>
+          </section>
+
+          <!-- History column -->
+          <section class="w-full md:w-3/5">
+            <div class="flex items-center justify-between">
+              <h2 class="mb-3 text-base font-semibold text-slate-900">
+                Historique de mes déplacements
+              </h2>
+              <button
+                id="refresh-history-btn"
+                type="button"
+                class="btn-ghost text-xs"
+              >
+                Actualiser
+              </button>
+            </div>
+            <div class="card overflow-hidden">
+              <div class="max-h-[520px] overflow-auto">
+                <table class="min-w-full text-left text-xs md:text-sm">
+                  <thead class="bg-slate-50 text-slate-500">
+                    <tr>
+                      <th class="px-3 py-2 font-medium">Date</th>
+                      <th class="px-3 py-2 font-medium">Trajet</th>
+                      <th class="px-3 py-2 font-medium">Distance</th>
+                      <th class="px-3 py-2 font-medium">Repas</th>
+                      <th class="px-3 py-2 font-medium">Total</th>
+                      <th class="px-3 py-2 font-medium">Statut</th>
+                    </tr>
+                  </thead>
+                  <tbody id="history-body" class="divide-y divide-slate-100 text-slate-700">
+                    <!-- rows appended via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="js/technician.js"></script>
+  </body>
+</html>
+

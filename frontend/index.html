@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>AFMOS Travel - Connexion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/components.css" />
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-900">
+    <div class="flex min-h-screen items-center justify-center px-4">
+      <div class="w-full max-w-md">
+        <div class="mb-8 text-center">
+          <div class="mx-auto mb-3 h-12 w-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-semibold shadow-md">
+            AF
+          </div>
+          <h1 class="text-2xl font-semibold text-slate-900">AFMOS Travel</h1>
+          <p class="mt-1 text-sm text-slate-500">
+            Connexion sécurisée par code personnel
+          </p>
+        </div>
+
+        <div class="card">
+          <form id="login-form" class="space-y-4">
+            <div>
+              <label for="username" class="form-label">Identifiant</label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                autocomplete="username"
+                required
+                class="form-input"
+                placeholder="ex: tech.jdoe"
+              />
+            </div>
+
+            <div>
+              <label for="accessCode" class="form-label">Code personnel</label>
+              <input
+                id="accessCode"
+                name="accessCode"
+                type="password"
+                autocomplete="current-password"
+                required
+                class="form-input"
+                placeholder="Code secret"
+              />
+            </div>
+
+            <div class="flex items-center justify-between text-sm">
+              <label class="flex items-center gap-2">
+                <input id="remember" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+                <span>Se souvenir de moi</span>
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              class="btn-primary w-full"
+            >
+              Se connecter
+            </button>
+
+            <p id="login-error" class="mt-2 text-sm text-red-600 hidden"></p>
+          </form>
+        </div>
+
+        <p class="mt-6 text-center text-xs text-slate-400">
+          © <span id="year"></span> AFMOS Maroc – Plateforme interne
+        </p>
+      </div>
+    </div>
+
+    <script type="module" src="js/login.js"></script>
+  </body>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</html>
+

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>AFMOS Travel - Administration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/components.css" />
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-900">
+    <div class="flex min-h-screen flex-col">
+      <!-- Header -->
+      <header class="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-semibold shadow-sm">
+            AF
+          </div>
+          <div>
+            <div class="text-sm font-semibold text-slate-900">AFMOS Travel</div>
+            <div class="text-xs text-slate-500">Administration &amp; Contrôle</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="admin-user-name" class="hidden text-sm text-slate-600 md:inline"></span>
+          <button id="logout-btn" class="btn-ghost text-sm">
+            Déconnexion
+          </button>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="flex-1 px-4 py-4 md:px-6 md:py-6">
+        <div class="mx-auto flex max-w-7xl flex-col gap-6">
+          <!-- KPI row -->
+          <section class="grid gap-4 md:grid-cols-4">
+            <div class="stat-card">
+              <div class="stat-label">Missions du jour</div>
+              <div id="kpi-today-count" class="stat-value">–</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">En attente</div>
+              <div id="kpi-pending-count" class="stat-value">–</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Suspicious</div>
+              <div id="kpi-suspicious-count" class="stat-value text-red-600">–</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Total remboursé (MAD)</div>
+              <div id="kpi-total-amount" class="stat-value">–</div>
+            </div>
+          </section>
+
+          <div class="grid gap-6 lg:grid-cols-3">
+            <!-- Validation panel -->
+            <section class="lg:col-span-2">
+              <div class="flex items-center justify-between mb-3">
+                <h2 class="text-base font-semibold text-slate-900">
+                  Déclarations en attente de validation
+                </h2>
+                <button
+                  id="refresh-pending-btn"
+                  type="button"
+                  class="btn-ghost text-xs"
+                >
+                  Actualiser
+                </button>
+              </div>
+              <div class="card overflow-hidden">
+                <div class="max-h-[360px] overflow-auto">
+                  <table class="min-w-full text-left text-xs md:text-sm">
+                    <thead class="bg-slate-50 text-slate-500">
+                      <tr>
+                        <th class="px-3 py-2 font-medium">Employé</th>
+                        <th class="px-3 py-2 font-medium">Trajet</th>
+                        <th class="px-3 py-2 font-medium">Distance</th>
+                        <th class="px-3 py-2 font-medium">Repas</th>
+                        <th class="px-3 py-2 font-medium">Total</th>
+                        <th class="px-3 py-2 font-medium">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="pending-body" class="divide-y divide-slate-100 text-slate-700">
+                      <!-- rows via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <!-- Suspicious alerts -->
+            <section>
+              <div class="flex items-center justify-between mb-3">
+                <h2 class="text-base font-semibold text-slate-900">
+                  Alertes de fraude
+                </h2>
+                <button
+                  id="refresh-suspicious-btn"
+                  type="button"
+                  class="btn-ghost text-xs"
+                >
+                  Actualiser
+                </button>
+              </div>
+              <div class="card space-y-3 max-h-[420px] overflow-auto">
+                <div id="suspicious-list" class="space-y-2">
+                  <!-- alerts via JS -->
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Exports -->
+          <section>
+            <h2 class="mb-3 text-base font-semibold text-slate-900">
+              Exports Excel
+            </h2>
+            <div class="card flex flex-wrap gap-3">
+              <button class="btn-outline" data-export="daily">Rapport du jour</button>
+              <button class="btn-outline" data-export="monthly">Rapport mensuel</button>
+              <button class="btn-outline" data-export="yearly">Rapport annuel</button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="js/admin.js"></script>
+  </body>
+</html>
+
