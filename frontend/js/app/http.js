@@ -1,4 +1,4 @@
-const API_BASE_URL = window.AF_API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = window.AF_API_BASE_URL || 'https://afmos-travel-backend.onrender.com';
 const TOKEN_KEY = 'afmos_token';
 const USER_KEY = 'afmos_user';
 
