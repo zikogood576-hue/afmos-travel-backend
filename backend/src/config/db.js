@@ -20,9 +20,7 @@ export const pool = new Pool({
   idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 10_000,
 
-  // ✅ Nécessaire avec le Transaction Pooler (Supavisor)
-  // Les prepared statements ne sont pas supportés en mode transaction pooling
-  options: '--no-prepared-statements'
+  // Connexion directe → pas besoin de désactiver les prepared statements
 });
 
 // Test de connexion au démarrage (utile pour diagnostiquer dans les logs Render)
