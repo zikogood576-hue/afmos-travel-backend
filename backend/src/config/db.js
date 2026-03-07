@@ -2,31 +2,32 @@ import pg from 'pg';
 import { env } from './env.js';
 import dns from 'dns';
 
-// ✅ Force IPv4 — résout le problème "connect ENETUNREACH" sur Render
-// Render tente IPv6 par défaut, mais Supabase Pooler n'écoute qu'en IPv4
 dns.setDefaultResultOrder('ipv4first');
 
 const { Pool } = pg;
 
+// ✅ Parser l'URL manuellement pour éviter les problèmes d'encodage
+// du username "postgres.xxxxx" avec le point (.)
+const url = new URL(env.DATABASE_URL);
+
 export const pool = new Pool({
-  connectionString: env.DATABASE_URL,
-
-  // ✅ SSL obligatoire pour Supabase (rejeter les certs auto-signés inconnus)
-  ssl: { rejectUnauthorized: false },
-
-  // Paramètres adaptés au Transaction Pooler de Supabase (port 6543)
-  // Le pooler gère lui-même les connexions → on limite le pool local
-  max: 5,                          // ⬇️ réduit (le pooler Supabase limite à ~15 par défaut)
-  idleTimeoutMillis: 30_000,
-  connectionTimeoutMillis: 10_000,
-
-  // Connexion directe → pas besoin de désactiver les prepared statements
+  host:     url.hostname,
+  port:     parseInt(url.port) || 5432,
+  database: url.pathname.replace('/', ''),
+  user:     decodeURIComponent(url.username),
+  password: decodeURIComponent(url.password),
+  ssl:      { rejectUnauthorized: false },
+  max:      5,
+  idleTimeoutMillis:       30_000,
+  connectionTimeoutMillis: 15_000
 });
 
-// Test de connexion au démarrage (utile pour diagnostiquer dans les logs Render)
 pool.connect((err, client, release) => {
   if (err) {
     console.error('❌ Échec connexion PostgreSQL :', err.message);
+    console.error('   host:', url.hostname);
+    console.error('   port:', url.port);
+    console.error('   user:', decodeURIComponent(url.username));
   } else {
     console.log('✅ Connexion PostgreSQL établie avec succès');
     release();
@@ -41,11 +42,7 @@ export async function withTx(fn) {
     await client.query('COMMIT');
     return result;
   } catch (err) {
-    try {
-      await client.query('ROLLBACK');
-    } catch {
-      // ignore rollback errors
-    }
+    try { await client.query('ROLLBACK'); } catch {}
     throw err;
   } finally {
     client.release();
