@@ -6,28 +6,27 @@ dns.setDefaultResultOrder('ipv4first');
 
 const { Pool } = pg;
 
-// ✅ Parser l'URL manuellement pour éviter les problèmes d'encodage
-// du username "postgres.xxxxx" avec le point (.)
-const url = new URL(env.DATABASE_URL);
+// Utiliser connectionString directement : pg parse l'URL sans erreur.
+// "Tenant or user not found" : utilisez la chaîne EXACTE du dashboard Supabase
+// (Connect > Session pooler) — la région (aws-0-REGION) doit correspondre au projet.
+// Render = IPv4 only → obligatoirement Session pooler (port 5432), pas direct.
+const connectionString = env.DATABASE_URL.replace(/^postgres:/, 'postgresql:');
 
 export const pool = new Pool({
-  host:     url.hostname,
-  port:     parseInt(url.port) || 5432,
-  database: url.pathname.replace('/', ''),
-  user:     decodeURIComponent(url.username),
-  password: decodeURIComponent(url.password),
-  ssl:      { rejectUnauthorized: false },
-  max:      5,
-  idleTimeoutMillis:       30_000,
+  connectionString,
+  ssl: { rejectUnauthorized: false },
+  max: 5,
+  idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 15_000
 });
 
 pool.connect((err, client, release) => {
   if (err) {
     console.error('❌ Échec connexion PostgreSQL :', err.message);
-    console.error('   host:', url.hostname);
-    console.error('   port:', url.port);
-    console.error('   user:', decodeURIComponent(url.username));
+    if (err.message?.includes('Tenant or user not found')) {
+      console.error('   → Vérifiez la chaîne du dashboard Supabase (Connect > Session pooler)');
+      console.error('   → La région (aws-0-xxx) doit correspondre à celle du projet.');
+    }
   } else {
     console.log('✅ Connexion PostgreSQL établie avec succès');
     release();

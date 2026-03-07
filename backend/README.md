@@ -14,6 +14,15 @@ npm install
 - `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
 - `JWT_SECRET`
 
+### Supabase + Render (erreur "Tenant or user not found")
+
+Render ne supporte pas IPv6. Utilisez **obligatoirement** la chaîne **Session pooler** (port 5432), jamais la connexion directe.
+
+1. Dashboard Supabase → **Connect** → **Session pooler**
+2. Copier la chaîne EXACTE (région `aws-0-xxx` doit correspondre au projet)
+3. Remplacer `[YOUR-PASSWORD]` par le mot de passe DB
+4. Coller dans `DATABASE_URL` sur Render (sans modifier la région)
+
 2) Créer les tables dans Supabase en exécutant:
 - `sql/001_schema.sql`
 
